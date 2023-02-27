@@ -33,6 +33,10 @@ defmodule Servy.Handler do
     %{conv | resp_body: "Bears"}
   end
 
+  def route(conv, "GET", "/bears/" <> id) when id == "1" do
+    %{conv | resp_body: "Bear #{id}"}
+  end
+
   def route(conv, method, path) do
     %{conv | resp_body: "Can't #{method} #{path} here", status: 404}
   end

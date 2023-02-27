@@ -54,6 +54,22 @@ defmodule Servy.HandlerTest do
     assert Handler.route(conv) == new_conv
   end
 
+  test "route /bears/1" do
+    conv = %{
+      method: "GET",
+      path: "/bears/1",
+      resp_body: ""
+    }
+
+    new_conv = %{
+      method: "GET",
+      path: "/bears/1",
+      resp_body: "Bear 1"
+    }
+
+    assert Handler.route(conv) == new_conv
+  end
+
   test "route 404" do
     conv = %{
       method: "GET",
