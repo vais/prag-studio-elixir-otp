@@ -12,26 +12,24 @@ defmodule Servy.HandlerTest do
     \r
     """
 
-    conv = %{
+    conv = %Handler{
       method: "GET",
-      path: "/wildthings",
-      status: 200,
-      resp_body: ""
+      path: "/wildthings"
     }
 
     assert Handler.parse(request) == conv
   end
 
   test "route /wildthings" do
-    conv = %{
+    conv = %Handler{
       method: "GET",
-      path: "/wildthings",
-      resp_body: ""
+      path: "/wildthings"
     }
 
-    new_conv = %{
+    new_conv = %Handler{
       method: "GET",
       path: "/wildthings",
+      status: 200,
       resp_body: "Bears, Lions, Tigers"
     }
 
@@ -39,15 +37,15 @@ defmodule Servy.HandlerTest do
   end
 
   test "route /bears" do
-    conv = %{
+    conv = %Handler{
       method: "GET",
-      path: "/bears",
-      resp_body: ""
+      path: "/bears"
     }
 
-    new_conv = %{
+    new_conv = %Handler{
       method: "GET",
       path: "/bears",
+      status: 200,
       resp_body: "Bears"
     }
 
@@ -55,15 +53,15 @@ defmodule Servy.HandlerTest do
   end
 
   test "route /bears/1" do
-    conv = %{
+    conv = %Handler{
       method: "GET",
-      path: "/bears/1",
-      resp_body: ""
+      path: "/bears/1"
     }
 
-    new_conv = %{
+    new_conv = %Handler{
       method: "GET",
       path: "/bears/1",
+      status: 200,
       resp_body: "Bear 1"
     }
 
@@ -71,14 +69,12 @@ defmodule Servy.HandlerTest do
   end
 
   test "route 404" do
-    conv = %{
+    conv = %Handler{
       method: "GET",
-      path: "/bigfoot",
-      status: 200,
-      resp_body: ""
+      path: "/bigfoot"
     }
 
-    new_conv = %{
+    new_conv = %Handler{
       method: "GET",
       path: "/bigfoot",
       status: 404,
@@ -89,7 +85,7 @@ defmodule Servy.HandlerTest do
   end
 
   test "format_response 200" do
-    conv = %{
+    conv = %Handler{
       method: "GET",
       path: "/wildthings",
       status: 200,
@@ -108,7 +104,7 @@ defmodule Servy.HandlerTest do
   end
 
   test "format_response 404" do
-    conv = %{
+    conv = %Handler{
       method: "GET",
       path: "/bigfoot",
       status: 404,

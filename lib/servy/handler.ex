@@ -1,4 +1,6 @@
 defmodule Servy.Handler do
+  defstruct method: nil, path: nil, status: nil, resp_body: nil
+
   def handle(request) do
     request
     |> parse
@@ -13,12 +15,7 @@ defmodule Servy.Handler do
       |> List.first()
       |> String.split(" ")
 
-    %{
-      method: method,
-      path: path,
-      status: 200,
-      resp_body: ""
-    }
+    %__MODULE__{method: method, path: path}
   end
 
   def route(conv) do
@@ -26,19 +23,19 @@ defmodule Servy.Handler do
   end
 
   def route(conv, "GET", "/wildthings") do
-    %{conv | resp_body: "Bears, Lions, Tigers"}
+    %{conv | status: 200, resp_body: "Bears, Lions, Tigers"}
   end
 
   def route(conv, "GET", "/bears") do
-    %{conv | resp_body: "Bears"}
+    %{conv | status: 200, resp_body: "Bears"}
   end
 
   def route(conv, "GET", "/bears/" <> id) when id == "1" do
-    %{conv | resp_body: "Bear #{id}"}
+    %{conv | status: 200, resp_body: "Bear #{id}"}
   end
 
   def route(conv, method, path) do
-    %{conv | resp_body: "Can't #{method} #{path} here", status: 404}
+    %{conv | status: 404, resp_body: "Can't #{method} #{path} here"}
   end
 
   def format_response(conv) do
