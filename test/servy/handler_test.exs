@@ -21,7 +21,7 @@ defmodule Servy.HandlerTest do
     assert Handler.parse(request) == conv
   end
 
-  test "route" do
+  test "route /wildthings" do
     conv = %{
       method: "GET",
       path: "/wildthings",
@@ -32,6 +32,22 @@ defmodule Servy.HandlerTest do
       method: "GET",
       path: "/wildthings",
       resp_body: "Bears, Lions, Tigers"
+    }
+
+    assert Handler.route(conv) == new_conv
+  end
+
+  test "route /bears" do
+    conv = %{
+      method: "GET",
+      path: "/bears",
+      resp_body: ""
+    }
+
+    new_conv = %{
+      method: "GET",
+      path: "/bears",
+      resp_body: "Bears"
     }
 
     assert Handler.route(conv) == new_conv
