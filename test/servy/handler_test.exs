@@ -15,6 +15,7 @@ defmodule Servy.HandlerTest do
     conv = %{
       method: "GET",
       path: "/wildthings",
+      status: 200,
       resp_body: ""
     }
 
@@ -53,10 +54,29 @@ defmodule Servy.HandlerTest do
     assert Handler.route(conv) == new_conv
   end
 
-  test "format_response" do
+  test "route 404" do
+    conv = %{
+      method: "GET",
+      path: "/bigfoot",
+      status: 200,
+      resp_body: ""
+    }
+
+    new_conv = %{
+      method: "GET",
+      path: "/bigfoot",
+      status: 404,
+      resp_body: "Can't GET /bigfoot here"
+    }
+
+    assert Handler.route(conv) == new_conv
+  end
+
+  test "format_response 200" do
     conv = %{
       method: "GET",
       path: "/wildthings",
+      status: 200,
       resp_body: "Bears, Lions, Tigers"
     }
 
@@ -66,6 +86,25 @@ defmodule Servy.HandlerTest do
     Content-Length: 20\r
     \r
     Bears, Lions, Tigers
+    """
+
+    assert Handler.format_response(conv) == response
+  end
+
+  test "format_response 404" do
+    conv = %{
+      method: "GET",
+      path: "/bigfoot",
+      status: 404,
+      resp_body: "Can't GET /bigfoot here"
+    }
+
+    response = """
+    HTTP/1.1 404 Not Found\r
+    Content-Type: text/html\r
+    Content-Length: 23\r
+    \r
+    Can't GET /bigfoot here
     """
 
     assert Handler.format_response(conv) == response
@@ -86,6 +125,26 @@ defmodule Servy.HandlerTest do
     Content-Length: 20\r
     \r
     Bears, Lions, Tigers
+    """
+
+    assert Handler.handle(request) == response
+  end
+
+  test "GET /bigfoot" do
+    request = """
+    GET /bigfoot HTTP/1.1\r
+    Host: example.com\r
+    User-Agent: ExampleBrowser/1.0\r
+    Accept: */*\r
+    \r
+    """
+
+    response = """
+    HTTP/1.1 404 Not Found\r
+    Content-Type: text/html\r
+    Content-Length: 23\r
+    \r
+    Can't GET /bigfoot here
     """
 
     assert Handler.handle(request) == response
