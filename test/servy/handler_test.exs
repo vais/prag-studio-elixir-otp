@@ -96,6 +96,19 @@ defmodule Servy.HandlerTest do
     assert Handler.route(conv) == new_conv
   end
 
+  test "track 404" do
+    io =
+      ExUnit.CaptureIO.capture_io(fn ->
+        Handler.track(%Handler{
+          method: "GET",
+          path: "/bigfoot",
+          status: 404
+        })
+      end)
+
+    assert io == "GET /bigfoot 404\n"
+  end
+
   test "format_response 200" do
     conv = %Handler{
       method: "GET",
@@ -191,6 +204,11 @@ defmodule Servy.HandlerTest do
     Can't GET /bigfoot here
     """
 
-    assert Handler.handle(request) == response
+    io =
+      ExUnit.CaptureIO.capture_io(fn ->
+        assert Handler.handle(request) == response
+      end)
+
+    assert io == "GET /bigfoot 404\n"
   end
 end

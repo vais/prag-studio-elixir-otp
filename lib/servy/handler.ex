@@ -6,6 +6,7 @@ defmodule Servy.Handler do
     |> parse
     |> rewrite_path
     |> route
+    |> track
     |> format_response
   end
 
@@ -44,6 +45,18 @@ defmodule Servy.Handler do
   def route(conv, method, path) do
     %{conv | status: 404, resp_body: "Can't #{method} #{path} here"}
   end
+
+  def track(%{status: 404} = conv) do
+    conv
+    |> Map.take([:method, :path, :status])
+    |> Map.values()
+    |> Enum.join(" ")
+    |> IO.puts()
+
+    conv
+  end
+
+  def track(conv), do: conv
 
   def format_response(conv) do
     """
