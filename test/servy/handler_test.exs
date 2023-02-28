@@ -32,6 +32,18 @@ defmodule Servy.HandlerTest do
     assert new_conv == Handler.rewrite_path(conv)
   end
 
+  test "rewrite_path with id" do
+    conv = %Handler{
+      path: "/bears?id=123"
+    }
+
+    new_conv = %Handler{
+      path: "/bears/123"
+    }
+
+    assert new_conv == Handler.rewrite_path(conv)
+  end
+
   test "route /wildthings" do
     conv = %Handler{
       method: "GET",

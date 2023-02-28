@@ -20,8 +20,12 @@ defmodule Servy.Handler do
     %__MODULE__{method: method, path: path}
   end
 
-  def rewrite_path(conv = %{path: "/wildlife"}) do
+  def rewrite_path(%{path: "/wildlife"} = conv) do
     %{conv | path: "/wildthings"}
+  end
+
+  def rewrite_path(%{path: "/bears?id=" <> id} = conv) do
+    %{conv | path: "/bears/#{id}"}
   end
 
   def rewrite_path(conv), do: conv
