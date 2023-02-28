@@ -20,6 +20,18 @@ defmodule Servy.HandlerTest do
     assert Handler.parse(request) == conv
   end
 
+  test "rewrite_path" do
+    conv = %Handler{
+      path: "/wildlife"
+    }
+
+    new_conv = %Handler{
+      path: "/wildthings"
+    }
+
+    assert new_conv == Handler.rewrite_path(conv)
+  end
+
   test "route /wildthings" do
     conv = %Handler{
       method: "GET",
@@ -125,6 +137,26 @@ defmodule Servy.HandlerTest do
   test "GET /wildthings" do
     request = """
     GET /wildthings HTTP/1.1\r
+    Host: example.com\r
+    User-Agent: ExampleBrowser/1.0\r
+    Accept: */*\r
+    \r
+    """
+
+    response = """
+    HTTP/1.1 200 OK\r
+    Content-Type: text/html\r
+    Content-Length: 20\r
+    \r
+    Bears, Lions, Tigers
+    """
+
+    assert Handler.handle(request) == response
+  end
+
+  test "GET /wildlife" do
+    request = """
+    GET /wildlife HTTP/1.1\r
     Host: example.com\r
     User-Agent: ExampleBrowser/1.0\r
     Accept: */*\r
