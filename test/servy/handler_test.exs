@@ -121,6 +121,15 @@ defmodule Servy.HandlerTest do
     assert io == "GET /bigfoot 404\n"
   end
 
+  test "emojify" do
+    conv = %Handler{method: "GET", status: 200, resp_body: "this should get emojified!"}
+    new_conv = %{conv | resp_body: "👍 this should get emojified! 🔥"}
+    assert new_conv == Handler.emojify(conv)
+
+    conv = %Handler{method: "GET", status: 404, resp_body: "this should NOT get emojified"}
+    assert conv == Handler.emojify(conv)
+  end
+
   test "format_response 200" do
     conv = %Handler{
       method: "GET",
@@ -171,9 +180,9 @@ defmodule Servy.HandlerTest do
     response = """
     HTTP/1.1 200 OK\r
     Content-Type: text/html\r
-    Content-Length: 20\r
+    Content-Length: 30\r
     \r
-    Bears, Lions, Tigers
+    👍 Bears, Lions, Tigers 🔥
     """
 
     assert Handler.handle(request) == response
@@ -191,9 +200,9 @@ defmodule Servy.HandlerTest do
     response = """
     HTTP/1.1 200 OK\r
     Content-Type: text/html\r
-    Content-Length: 20\r
+    Content-Length: 30\r
     \r
-    Bears, Lions, Tigers
+    👍 Bears, Lions, Tigers 🔥
     """
 
     assert Handler.handle(request) == response
