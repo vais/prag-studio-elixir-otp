@@ -31,11 +31,17 @@ defmodule Servy.Handler do
     %{conv | path: "/wildthings"}
   end
 
-  def rewrite_path(%{path: "/bears?id=" <> id} = conv) do
-    %{conv | path: "/bears/#{id}"}
+  def rewrite_path(%{path: path} = conv) do
+    regex = ~r"^/(?<resource>\w+)\?id=(?<id>\d+)$"
+    captures = Regex.named_captures(regex, path)
+    rewrite_path(conv, captures)
   end
 
-  def rewrite_path(conv), do: conv
+  defp rewrite_path(conv, _captures = %{"resource" => resource, "id" => id}) do
+    %{conv | path: "/#{resource}/#{id}"}
+  end
+
+  defp rewrite_path(conv, _captures = nil), do: conv
 
   def route(%{method: "GET", path: "/wildthings"} = conv) do
     %{conv | status: 200, resp_body: "Bears, Lions, Tigers"}
