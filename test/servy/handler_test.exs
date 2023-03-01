@@ -110,7 +110,7 @@ defmodule Servy.HandlerTest do
 
   test "track 404" do
     io =
-      ExUnit.CaptureIO.capture_io(fn ->
+      ExUnit.CaptureLog.capture_log(fn ->
         Handler.track(%Handler{
           method: "GET",
           path: "/bigfoot",
@@ -118,7 +118,7 @@ defmodule Servy.HandlerTest do
         })
       end)
 
-    assert io == "GET /bigfoot 404\n"
+    assert io =~ "GET /bigfoot 404\n"
   end
 
   test "emojify" do
@@ -226,10 +226,10 @@ defmodule Servy.HandlerTest do
     """
 
     io =
-      ExUnit.CaptureIO.capture_io(fn ->
+      ExUnit.CaptureLog.capture_log(fn ->
         assert Handler.handle(request) == response
       end)
 
-    assert io == "GET /bigfoot 404\n"
+    assert io =~ "GET /bigfoot 404\n"
   end
 end

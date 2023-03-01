@@ -1,6 +1,8 @@
 defmodule Servy.Handler do
   defstruct method: nil, path: nil, status: nil, resp_body: nil
 
+  require Logger
+
   def handle(request) do
     request
     |> parse
@@ -64,7 +66,7 @@ defmodule Servy.Handler do
     |> Map.take([:method, :path, :status])
     |> Map.values()
     |> Enum.join(" ")
-    |> IO.puts()
+    |> Logger.error()
 
     conv
   end
