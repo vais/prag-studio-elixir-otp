@@ -60,6 +60,13 @@ defmodule Servy.Handler do
     |> handle_file(conv)
   end
 
+  def route(%{method: "GET", path: "/bears/new"} = conv) do
+    "../../pages/form.html"
+    |> Path.expand(__DIR__)
+    |> File.read()
+    |> handle_file(conv)
+  end
+
   def route(%{method: "GET", path: "/wildthings"} = conv) do
     %{conv | status: 200, resp_body: "Bears, Lions, Tigers"}
   end

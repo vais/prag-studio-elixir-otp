@@ -119,6 +119,23 @@ defmodule Servy.HandlerTest do
     assert new_conv.resp_body == "File not found"
   end
 
+  test "route /bears/new" do
+    conv = %Handler{
+      method: "GET",
+      path: "/bears/new"
+    }
+
+    file = Path.expand("../../pages/form.html", __DIR__)
+
+    new_conv = Handler.route(conv)
+    assert new_conv.status == 200
+    assert new_conv.resp_body == File.read!(file)
+
+    new_conv = without_file(file, fn -> Handler.route(conv) end)
+    assert new_conv.status == 404
+    assert new_conv.resp_body == "File not found"
+  end
+
   test "route 404" do
     conv = %Handler{
       method: "GET",
