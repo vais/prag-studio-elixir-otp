@@ -45,6 +45,21 @@ defmodule Servy.Handler do
 
   defp rewrite_path(conv, _captures = nil), do: conv
 
+  defp handle_file({:ok, content}, conv) do
+    %{conv | status: 200, resp_body: content}
+  end
+
+  defp handle_file({:error, :enoent}, conv) do
+    %{conv | status: 404, resp_body: "File not found"}
+  end
+
+  def route(%{method: "GET", path: "/about"} = conv) do
+    "../../pages/about.html"
+    |> Path.expand(__DIR__)
+    |> File.read()
+    |> handle_file(conv)
+  end
+
   def route(%{method: "GET", path: "/wildthings"} = conv) do
     %{conv | status: 200, resp_body: "Bears, Lions, Tigers"}
   end
