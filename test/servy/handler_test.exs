@@ -20,30 +20,6 @@ defmodule Servy.HandlerTest do
     assert Handler.parse(request) == conv
   end
 
-  test "rewrite_path" do
-    conv = %Handler{
-      path: "/wildlife"
-    }
-
-    new_conv = %Handler{
-      path: "/wildthings"
-    }
-
-    assert new_conv == Handler.rewrite_path(conv)
-  end
-
-  test "rewrite_path with id" do
-    conv = %Handler{
-      path: "/bears?id=123"
-    }
-
-    new_conv = %Handler{
-      path: "/bears/123"
-    }
-
-    assert new_conv == Handler.rewrite_path(conv)
-  end
-
   test "route /wildthings" do
     conv = %Handler{
       method: "GET",
@@ -150,28 +126,6 @@ defmodule Servy.HandlerTest do
     }
 
     assert Handler.route(conv) == new_conv
-  end
-
-  test "track 404" do
-    io =
-      ExUnit.CaptureLog.capture_log(fn ->
-        Handler.track(%Handler{
-          method: "GET",
-          path: "/bigfoot",
-          status: 404
-        })
-      end)
-
-    assert io =~ "GET /bigfoot 404\n"
-  end
-
-  test "emojify" do
-    conv = %Handler{method: "GET", status: 200, resp_body: "this should get emojified!"}
-    new_conv = %{conv | resp_body: "👍 this should get emojified! 🔥"}
-    assert new_conv == Handler.emojify(conv)
-
-    conv = %Handler{method: "GET", status: 404, resp_body: "this should NOT get emojified"}
-    assert conv == Handler.emojify(conv)
   end
 
   test "format_response 200" do

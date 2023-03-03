@@ -1,17 +1,17 @@
 defmodule Servy.Handler do
   defstruct method: nil, path: nil, status: nil, resp_body: nil
 
-  require Logger
+  alias Servy.Plugins
 
   @pages_path Path.expand("../../pages", __DIR__)
 
   def handle(request) do
     request
     |> parse
-    |> rewrite_path
+    |> Plugins.rewrite_path()
     |> route
-    |> emojify
-    |> track
+    |> Plugins.emojify()
+    |> Plugins.track()
     |> format_response
   end
 
@@ -24,28 +24,6 @@ defmodule Servy.Handler do
 
     %__MODULE__{method: method, path: path}
   end
-
-  def emojify(%{method: "GET", status: 200} = conv) do
-    %{conv | resp_body: "👍 #{conv.resp_body} 🔥"}
-  end
-
-  def emojify(conv), do: conv
-
-  def rewrite_path(%{path: "/wildlife"} = conv) do
-    %{conv | path: "/wildthings"}
-  end
-
-  def rewrite_path(%{path: path} = conv) do
-    regex = ~r"^/(?<resource>\w+)\?id=(?<id>\d+)$"
-    captures = Regex.named_captures(regex, path)
-    rewrite_path(conv, captures)
-  end
-
-  defp rewrite_path(conv, _captures = %{"resource" => resource, "id" => id}) do
-    %{conv | path: "/#{resource}/#{id}"}
-  end
-
-  defp rewrite_path(conv, _captures = nil), do: conv
 
   defp handle_file({:ok, content}, conv) do
     %{conv | status: 200, resp_body: content}
@@ -84,18 +62,6 @@ defmodule Servy.Handler do
   def route(%{method: method, path: path} = conv) do
     %{conv | status: 404, resp_body: "Can't #{method} #{path} here"}
   end
-
-  def track(%{status: 404} = conv) do
-    conv
-    |> Map.take([:method, :path, :status])
-    |> Map.values()
-    |> Enum.join(" ")
-    |> Logger.error()
-
-    conv
-  end
-
-  def track(conv), do: conv
 
   def format_response(conv) do
     """
