@@ -3,23 +3,6 @@ defmodule Servy.HandlerTest do
 
   alias Servy.Handler
 
-  test "parse" do
-    request = """
-    GET /wildthings HTTP/1.1\r
-    Host: example.com\r
-    User-Agent: ExampleBrowser/1.0\r
-    Accept: */*\r
-    \r
-    """
-
-    conv = %Handler{
-      method: "GET",
-      path: "/wildthings"
-    }
-
-    assert Handler.parse(request) == conv
-  end
-
   test "route /wildthings" do
     conv = %Handler{
       method: "GET",

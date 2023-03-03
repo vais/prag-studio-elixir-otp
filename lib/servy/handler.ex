@@ -1,28 +1,19 @@
 defmodule Servy.Handler do
   defstruct method: nil, path: nil, status: nil, resp_body: nil
 
+  alias Servy.Parser
   alias Servy.Plugins
 
   @pages_path Path.expand("../../pages", __DIR__)
 
   def handle(request) do
     request
-    |> parse
+    |> Parser.parse()
     |> Plugins.rewrite_path()
     |> route
     |> Plugins.emojify()
     |> Plugins.track()
     |> format_response
-  end
-
-  def parse(request) do
-    [method, path, _] =
-      request
-      |> String.split("\n")
-      |> List.first()
-      |> String.split(" ")
-
-    %__MODULE__{method: method, path: path}
   end
 
   defp handle_file({:ok, content}, conv) do
