@@ -2,7 +2,7 @@ defmodule Servy.ParserTest do
   use ExUnit.Case
 
   alias Servy.Parser
-  alias Servy.Handler
+  alias Servy.Conv
 
   test "parse" do
     request = """
@@ -13,7 +13,7 @@ defmodule Servy.ParserTest do
     \r
     """
 
-    conv = %Handler{
+    conv = %Conv{
       method: "GET",
       path: "/wildthings"
     }

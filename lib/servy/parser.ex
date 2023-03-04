@@ -1,5 +1,5 @@
 defmodule Servy.Parser do
-  alias Servy.Handler
+  alias Servy.Conv
 
   def parse(request) do
     [method, path, _] =
@@ -8,6 +8,6 @@ defmodule Servy.Parser do
       |> List.first()
       |> String.split(" ")
 
-    %Handler{method: method, path: path}
+    %Conv{method: method, path: path}
   end
 end

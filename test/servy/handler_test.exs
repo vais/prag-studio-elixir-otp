@@ -1,15 +1,16 @@
 defmodule Servy.HandlerTest do
   use ExUnit.Case
 
+  alias Servy.Conv
   alias Servy.Handler
 
   test "route /wildthings" do
-    conv = %Handler{
+    conv = %Conv{
       method: "GET",
       path: "/wildthings"
     }
 
-    new_conv = %Handler{
+    new_conv = %Conv{
       method: "GET",
       path: "/wildthings",
       status: 200,
@@ -20,12 +21,12 @@ defmodule Servy.HandlerTest do
   end
 
   test "route /bears" do
-    conv = %Handler{
+    conv = %Conv{
       method: "GET",
       path: "/bears"
     }
 
-    new_conv = %Handler{
+    new_conv = %Conv{
       method: "GET",
       path: "/bears",
       status: 200,
@@ -36,12 +37,12 @@ defmodule Servy.HandlerTest do
   end
 
   test "route /bears/1" do
-    conv = %Handler{
+    conv = %Conv{
       method: "GET",
       path: "/bears/1"
     }
 
-    new_conv = %Handler{
+    new_conv = %Conv{
       method: "GET",
       path: "/bears/1",
       status: 200,
@@ -62,7 +63,7 @@ defmodule Servy.HandlerTest do
   end
 
   test "route /about" do
-    conv = %Handler{
+    conv = %Conv{
       method: "GET",
       path: "/about"
     }
@@ -79,7 +80,7 @@ defmodule Servy.HandlerTest do
   end
 
   test "route /bears/new" do
-    conv = %Handler{
+    conv = %Conv{
       method: "GET",
       path: "/bears/new"
     }
@@ -96,12 +97,12 @@ defmodule Servy.HandlerTest do
   end
 
   test "route 404" do
-    conv = %Handler{
+    conv = %Conv{
       method: "GET",
       path: "/bigfoot"
     }
 
-    new_conv = %Handler{
+    new_conv = %Conv{
       method: "GET",
       path: "/bigfoot",
       status: 404,
@@ -112,7 +113,7 @@ defmodule Servy.HandlerTest do
   end
 
   test "format_response 200" do
-    conv = %Handler{
+    conv = %Conv{
       method: "GET",
       path: "/wildthings",
       status: 200,
@@ -131,7 +132,7 @@ defmodule Servy.HandlerTest do
   end
 
   test "format_response 404" do
-    conv = %Handler{
+    conv = %Conv{
       method: "GET",
       path: "/bigfoot",
       status: 404,
