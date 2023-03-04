@@ -214,4 +214,27 @@ defmodule Servy.HandlerTest do
 
     assert io =~ "GET /bigfoot 404\n"
   end
+
+  test "POST /bears" do
+    request = """
+    POST /bears HTTP/1.1
+    Host: example.com
+    User-Agent: ExampleBrowser/1.0
+    Accept: */*
+    Content-Type: application/x-www-form-urlencoded
+    Content-Length: 21
+
+    name=Baloo&type=Brown
+    """
+
+    response = """
+    HTTP/1.1 201 Created
+    Content-Type: text/html
+    Content-Length: 33
+
+    Created a Brown bear named Baloo!
+    """
+
+    assert Handler.handle(request) == response
+  end
 end
