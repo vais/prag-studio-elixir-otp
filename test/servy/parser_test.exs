@@ -6,11 +6,11 @@ defmodule Servy.ParserTest do
 
   test "parse" do
     request = """
-    GET /wildthings HTTP/1.1\r
-    Host: example.com\r
-    User-Agent: ExampleBrowser/1.0\r
-    Accept: */*\r
-    \r
+    GET /wildthings HTTP/1.1
+    Host: example.com
+    User-Agent: ExampleBrowser/1.0
+    Accept: */*
+
     """
 
     conv = %Conv{

@@ -121,10 +121,10 @@ defmodule Servy.HandlerTest do
     }
 
     response = """
-    HTTP/1.1 200 OK\r
-    Content-Type: text/html\r
-    Content-Length: 20\r
-    \r
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+    Content-Length: 20
+
     Bears, Lions, Tigers
     """
 
@@ -140,10 +140,10 @@ defmodule Servy.HandlerTest do
     }
 
     response = """
-    HTTP/1.1 404 Not Found\r
-    Content-Type: text/html\r
-    Content-Length: 23\r
-    \r
+    HTTP/1.1 404 Not Found
+    Content-Type: text/html
+    Content-Length: 23
+
     Can't GET /bigfoot here
     """
 
@@ -152,18 +152,18 @@ defmodule Servy.HandlerTest do
 
   test "GET /wildthings" do
     request = """
-    GET /wildthings HTTP/1.1\r
-    Host: example.com\r
-    User-Agent: ExampleBrowser/1.0\r
-    Accept: */*\r
-    \r
+    GET /wildthings HTTP/1.1
+    Host: example.com
+    User-Agent: ExampleBrowser/1.0
+    Accept: */*
+
     """
 
     response = """
-    HTTP/1.1 200 OK\r
-    Content-Type: text/html\r
-    Content-Length: 30\r
-    \r
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+    Content-Length: 30
+
     👍 Bears, Lions, Tigers 🔥
     """
 
@@ -172,18 +172,18 @@ defmodule Servy.HandlerTest do
 
   test "GET /wildlife" do
     request = """
-    GET /wildlife HTTP/1.1\r
-    Host: example.com\r
-    User-Agent: ExampleBrowser/1.0\r
-    Accept: */*\r
-    \r
+    GET /wildlife HTTP/1.1
+    Host: example.com
+    User-Agent: ExampleBrowser/1.0
+    Accept: */*
+
     """
 
     response = """
-    HTTP/1.1 200 OK\r
-    Content-Type: text/html\r
-    Content-Length: 30\r
-    \r
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+    Content-Length: 30
+
     👍 Bears, Lions, Tigers 🔥
     """
 
@@ -192,18 +192,18 @@ defmodule Servy.HandlerTest do
 
   test "GET /bigfoot" do
     request = """
-    GET /bigfoot HTTP/1.1\r
-    Host: example.com\r
-    User-Agent: ExampleBrowser/1.0\r
-    Accept: */*\r
-    \r
+    GET /bigfoot HTTP/1.1
+    Host: example.com
+    User-Agent: ExampleBrowser/1.0
+    Accept: */*
+
     """
 
     response = """
-    HTTP/1.1 404 Not Found\r
-    Content-Type: text/html\r
-    Content-Length: 23\r
-    \r
+    HTTP/1.1 404 Not Found
+    Content-Type: text/html
+    Content-Length: 23
+
     Can't GET /bigfoot here
     """
 
