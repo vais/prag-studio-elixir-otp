@@ -30,7 +30,15 @@ defmodule Servy.HandlerTest do
       method: "GET",
       path: "/bears",
       status: 200,
-      resp_body: "Bears"
+      resp_body:
+        """
+        <ul>
+          <li>Brutus</li>
+          <li>Kenai</li>
+          <li>Scarface</li>
+        </ul>
+        """
+        |> String.replace([" ", "\n"], "")
     }
 
     assert Handler.route(conv) == new_conv
@@ -46,7 +54,7 @@ defmodule Servy.HandlerTest do
       method: "GET",
       path: "/bears/1",
       status: 200,
-      resp_body: "Bear 1"
+      resp_body: "<h1>Bear 1: Teddy</h1>"
     }
 
     assert Handler.route(conv) == new_conv
