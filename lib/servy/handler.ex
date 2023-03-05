@@ -49,9 +49,14 @@ defmodule Servy.Handler do
     %{conv | status: 200, resp_body: "Bear #{id}"}
   end
 
-  def route(%Conv{method: "POST", path: "/bears", params: params} = conv) do
-    %{"type" => type, "name" => name} = params
+  def route(
+        %Conv{method: "POST", path: "/bears", params: %{"type" => type, "name" => name}} = conv
+      ) do
     %{conv | status: 201, resp_body: "Created a #{type} bear named #{name}!"}
+  end
+
+  def route(%Conv{method: "POST", path: "/bears"} = conv) do
+    %{conv | status: 400, resp_body: "name and type are required fields"}
   end
 
   def route(%Conv{method: method, path: path} = conv) do

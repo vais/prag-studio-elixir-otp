@@ -237,4 +237,27 @@ defmodule Servy.HandlerTest do
 
     assert Handler.handle(request) == response
   end
+
+  test "POST /bears Bad Request" do
+    request = """
+    POST /bears HTTP/1.1
+    Host: example.com
+    User-Agent: ExampleBrowser/1.0
+    Accept: */*
+    Content-Type: multipart/form-data
+    Content-Length: 21
+
+    name=Baloo&type=Brown
+    """
+
+    response = """
+    HTTP/1.1 400 Bad Request
+    Content-Type: text/html
+    Content-Length: 33
+
+    name and type are required fields
+    """
+
+    assert Handler.handle(request) == response
+  end
 end

@@ -1,6 +1,7 @@
 defmodule Servy.Conv do
   defstruct method: "",
             path: "",
+            headers: %{},
             params: %{},
             resp_body: "",
             status: nil
@@ -13,6 +14,7 @@ defmodule Servy.Conv do
 
   defp status_reason(200), do: "OK"
   defp status_reason(201), do: "Created"
+  defp status_reason(400), do: "Bad Request"
   defp status_reason(401), do: "Unauthorized"
   defp status_reason(403), do: "Forbidden"
   defp status_reason(404), do: "Not Found"

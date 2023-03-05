@@ -15,7 +15,12 @@ defmodule Servy.ParserTest do
 
     conv = %Conv{
       method: "GET",
-      path: "/wildthings"
+      path: "/wildthings",
+      headers: %{
+        "Host" => "example.com",
+        "User-Agent" => "ExampleBrowser/1.0",
+        "Accept" => "*/*"
+      }
     }
 
     assert Parser.parse(request) == conv
@@ -36,6 +41,13 @@ defmodule Servy.ParserTest do
     conv = %Conv{
       method: "POST",
       path: "/bears",
+      headers: %{
+        "Host" => "example.com",
+        "User-Agent" => "ExampleBrowser/1.0",
+        "Accept" => "*/*",
+        "Content-Type" => "application/x-www-form-urlencoded",
+        "Content-Length" => "21"
+      },
       params: %{"name" => "Baloo", "type" => "Brown"}
     }
 
