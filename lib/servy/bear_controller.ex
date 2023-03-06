@@ -28,4 +28,8 @@ defmodule Servy.BearController do
   def create(conv, _params) do
     %{conv | status: 400, resp_body: "name and type are required fields"}
   end
+
+  def delete(conv, _params) do
+    %{conv | status: 403, resp_body: "Deleting bears is forbidden"}
+  end
 end

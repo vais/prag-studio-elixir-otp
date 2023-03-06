@@ -268,4 +268,24 @@ defmodule Servy.HandlerTest do
 
     assert Handler.handle(request) == response
   end
+
+  test "DELETE /bears/1" do
+    request = """
+    DELETE /bears/1 HTTP/1.1
+    Host: example.com
+    User-Agent: ExampleBrowser/1.0
+    Accept: */*
+
+    """
+
+    response = """
+    HTTP/1.1 403 Forbidden
+    Content-Type: text/html
+    Content-Length: 27
+
+    Deleting bears is forbidden
+    """
+
+    assert Handler.handle(request) == response
+  end
 end
