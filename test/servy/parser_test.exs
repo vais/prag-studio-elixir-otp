@@ -7,11 +7,11 @@ defmodule Servy.ParserTest do
 
   test "parse a GET request" do
     request = """
-    GET /wildthings HTTP/1.1
-    Host: example.com
-    User-Agent: ExampleBrowser/1.0
-    Accept: */*
-
+    GET /wildthings HTTP/1.1\r
+    Host: example.com\r
+    User-Agent: ExampleBrowser/1.0\r
+    Accept: */*\r
+    \r
     """
 
     conv = %Conv{
@@ -29,13 +29,13 @@ defmodule Servy.ParserTest do
 
   test "parse a POST request" do
     request = """
-    POST /bears HTTP/1.1
-    Host: example.com
-    User-Agent: ExampleBrowser/1.0
-    Accept: */*
-    Content-Type: application/x-www-form-urlencoded
-    Content-Length: 21
-
+    POST /bears HTTP/1.1\r
+    Host: example.com\r
+    User-Agent: ExampleBrowser/1.0\r
+    Accept: */*\r
+    Content-Type: application/x-www-form-urlencoded\r
+    Content-Length: 21\r
+    \r
     name=Baloo&type=Brown
     """
 
