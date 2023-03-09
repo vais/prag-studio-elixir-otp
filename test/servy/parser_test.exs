@@ -1,5 +1,6 @@
 defmodule Servy.ParserTest do
   use ExUnit.Case
+  doctest Servy.Parser
 
   alias Servy.Parser
   alias Servy.Conv
