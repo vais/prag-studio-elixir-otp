@@ -21,6 +21,7 @@ defmodule Servy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:poison, "~> 5.0"},
       {:mix_test_watch, ">= 0.0.0", only: [:dev, :test], runtime: false}
     ]
   end
