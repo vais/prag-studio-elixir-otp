@@ -170,9 +170,9 @@ defmodule Servy.HandlerTest do
     response = """
     HTTP/1.1 200 OK\r
     Content-Type: text/html\r
-    Content-Length: 30\r
+    Content-Length: 20\r
     \r
-    👍 Bears, Lions, Tigers 🔥
+    Bears, Lions, Tigers
     """
 
     assert Handler.handle(request) == response
@@ -190,9 +190,9 @@ defmodule Servy.HandlerTest do
     response = """
     HTTP/1.1 200 OK\r
     Content-Type: text/html\r
-    Content-Length: 30\r
+    Content-Length: 20\r
     \r
-    👍 Bears, Lions, Tigers 🔥
+    Bears, Lions, Tigers
     """
 
     assert Handler.handle(request) == response
@@ -287,5 +287,38 @@ defmodule Servy.HandlerTest do
     """
 
     assert Handler.handle(request) == response
+  end
+
+  defp remove_whitespace(string), do: String.replace(string, ~r"\s", "")
+
+  test "GET /api/bears" do
+    request = """
+    GET /api/bears HTTP/1.1\r
+    Host: example.com\r
+    User-Agent: ExampleBrowser/1.0\r
+    Accept: */*\r
+    \r
+    """
+
+    response = Handler.handle(request)
+
+    expected_response = """
+    HTTP/1.1 200 OK\r
+    Content-Type: application/json\r
+    Content-Length: 605\r
+    \r
+    [{"type":"Brown","name":"Teddy","id":1,"hibernating":true},
+     {"type":"Black","name":"Smokey","id":2,"hibernating":false},
+     {"type":"Brown","name":"Paddington","id":3,"hibernating":false},
+     {"type":"Grizzly","name":"Scarface","id":4,"hibernating":true},
+     {"type":"Polar","name":"Snow","id":5,"hibernating":false},
+     {"type":"Grizzly","name":"Brutus","id":6,"hibernating":false},
+     {"type":"Black","name":"Rosie","id":7,"hibernating":true},
+     {"type":"Panda","name":"Roscoe","id":8,"hibernating":false},
+     {"type":"Polar","name":"Iceman","id":9,"hibernating":true},
+     {"type":"Grizzly","name":"Kenai","id":10,"hibernating":false}]
+    """
+
+    assert remove_whitespace(response) == remove_whitespace(expected_response)
   end
 end

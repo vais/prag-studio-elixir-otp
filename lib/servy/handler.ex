@@ -3,6 +3,7 @@ defmodule Servy.Handler do
   alias Servy.Plugins
   alias Servy.Conv
   alias Servy.BearController
+  alias Servy.Api
 
   @pages_path Path.expand("../../pages", __DIR__)
 
@@ -11,7 +12,6 @@ defmodule Servy.Handler do
     |> Parser.parse()
     |> Plugins.rewrite_path()
     |> route
-    |> Plugins.emojify()
     |> Plugins.track()
     |> format_response
   end
@@ -46,6 +46,10 @@ defmodule Servy.Handler do
     BearController.index(conv)
   end
 
+  def route(%Conv{method: "GET", path: "/api/bears"} = conv) do
+    Api.BearController.index(conv)
+  end
+
   def route(%Conv{method: "GET", path: "/bears/" <> id} = conv) do
     params = Map.put(conv.params, "id", id)
     BearController.show(conv, params)
@@ -67,7 +71,7 @@ defmodule Servy.Handler do
   def format_response(%Conv{} = conv) do
     """
     HTTP/1.1 #{Conv.full_status(conv)}\r
-    Content-Type: text/html\r
+    Content-Type: #{conv.resp_content_type}\r
     Content-Length: #{byte_size(conv.resp_body)}\r
     \r
     #{conv.resp_body}
