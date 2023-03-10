@@ -323,4 +323,27 @@ defmodule Servy.HandlerTest do
 
     assert remove_whitespace(response) == remove_whitespace(expected_response)
   end
+
+  test "POST /api/bears" do
+    request = """
+    POST /api/bears HTTP/1.1\r
+    Host: example.com\r
+    User-Agent: ExampleBrowser/1.0\r
+    Accept: */*\r
+    Content-Type: application/json\r
+    Content-Length: 31\r
+    \r
+    {"name":"Baloo","type":"Brown"}
+    """
+
+    response = """
+    HTTP/1.1 201 Created\r
+    Content-Type: application/json\r
+    Content-Length: 66\r
+    \r
+    {"status":"success","message":"Created a Brown bear named Baloo!"}
+    """
+
+    assert Handler.handle(request) == response
+  end
 end

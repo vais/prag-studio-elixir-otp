@@ -62,6 +62,9 @@ defmodule Servy.Parser do
       iex> Servy.Parser.parse_params("application/x-www-form-urlencoded", "a=1&b=2")
       %{"a" => "1", "b" => "2"}
 
+      iex> Servy.Parser.parse_params("application/json", ~s({"a":1,"b":2}))
+      %{"a" => 1, "b" => 2}
+
       iex> Servy.Parser.parse_params("unsupported content type", "a=1&b=2")
       %{}
 
@@ -70,6 +73,11 @@ defmodule Servy.Parser do
     body
     |> String.trim()
     |> URI.decode_query()
+  end
+
+  def parse_params(_content_type = "application/json", body) do
+    body
+    |> Poison.decode!()
   end
 
   def parse_params(_content_type, _body), do: %{}
