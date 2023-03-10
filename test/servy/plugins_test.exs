@@ -49,4 +49,14 @@ defmodule Servy.PluginsTest do
     conv = %Conv{method: "GET", status: 404, resp_body: "this should NOT get emojified"}
     assert conv == Plugins.emojify(conv)
   end
+
+  test "content_length for empty response body" do
+    conv = %Conv{resp_body: ""}
+    assert Plugins.content_length(conv) == %Conv{conv | resp_headers: %{"Content-Length" => 0}}
+  end
+
+  test "content_length for non-empty response body" do
+    conv = %Conv{resp_body: "hi"}
+    assert Plugins.content_length(conv) == %Conv{conv | resp_headers: %{"Content-Length" => 2}}
+  end
 end

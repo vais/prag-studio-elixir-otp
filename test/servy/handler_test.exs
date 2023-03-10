@@ -125,6 +125,7 @@ defmodule Servy.HandlerTest do
       method: "GET",
       path: "/wildthings",
       status: 200,
+      resp_headers: %{"Content-Length" => 20},
       resp_body: "Bears, Lions, Tigers"
     }
 
@@ -144,6 +145,7 @@ defmodule Servy.HandlerTest do
       method: "GET",
       path: "/bigfoot",
       status: 404,
+      resp_headers: %{"Content-Length" => 23},
       resp_body: "Can't GET /bigfoot here"
     }
 
