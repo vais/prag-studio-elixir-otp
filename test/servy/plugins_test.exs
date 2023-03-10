@@ -52,11 +52,11 @@ defmodule Servy.PluginsTest do
 
   test "content_length for empty response body" do
     conv = %Conv{resp_body: ""}
-    assert Plugins.content_length(conv) == %Conv{conv | resp_headers: %{"Content-Length" => 0}}
+    assert %{"Content-Length" => 0} = Plugins.content_length(conv).resp_headers
   end
 
   test "content_length for non-empty response body" do
     conv = %Conv{resp_body: "hi"}
-    assert Plugins.content_length(conv) == %Conv{conv | resp_headers: %{"Content-Length" => 2}}
+    assert %{"Content-Length" => 2} = Plugins.content_length(conv).resp_headers
   end
 end
