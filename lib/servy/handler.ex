@@ -69,11 +69,17 @@ defmodule Servy.Handler do
     %{conv | status: 404, resp_body: "Can't #{method} #{path} here"}
   end
 
+  defp format_response_headers(%Conv{} = conv) do
+    conv.resp_headers
+    |> Enum.map(fn {key, value} -> "#{key}: #{value}" end)
+    |> Enum.sort(fn a, b -> b < a end)
+    |> Enum.join("\r\n")
+  end
+
   def format_response(%Conv{} = conv) do
     """
     HTTP/1.1 #{Conv.full_status(conv)}\r
-    Content-Type: #{conv.resp_headers["Content-Type"]}\r
-    Content-Length: #{conv.resp_headers["Content-Length"]}\r
+    #{format_response_headers(conv)}\r
     \r
     #{conv.resp_body}
     """
