@@ -87,6 +87,32 @@ defmodule Servy.HandlerTest do
     assert new_conv.resp_body == "File not found"
   end
 
+  test "route /pages/faq" do
+    conv = %Conv{
+      method: "GET",
+      path: "/pages/faq"
+    }
+
+    new_conv = Handler.route(conv)
+    assert new_conv.status == 200
+    assert new_conv.resp_body =~ "<h1>Frequently Asked Questions</h1>"
+
+    new_conv = Handler.route(%{conv | path: "/pages/nope"})
+    assert new_conv.status == 404
+    assert new_conv.resp_body == "File not found"
+  end
+
+  test "route /pages/ directory traversal vulnerability" do
+    conv = %Conv{
+      method: "GET",
+      path: "/pages/../README"
+    }
+
+    new_conv = Handler.route(conv)
+    assert new_conv.status == 200
+    assert new_conv.resp_body =~ "<h1>Servy</h1>"
+  end
+
   test "route /bears/new" do
     conv = %Conv{
       method: "GET",

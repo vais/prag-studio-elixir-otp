@@ -22,6 +22,7 @@ defmodule Servy.MixProject do
   defp deps do
     [
       {:poison, "~> 5.0"},
+      {:earmark, "~> 1.4"},
       {:mix_test_watch, ">= 0.0.0", only: [:dev, :test], runtime: false}
     ]
   end

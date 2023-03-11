@@ -25,11 +25,25 @@ defmodule Servy.Handler do
     %{conv | status: 404, resp_body: "File not found"}
   end
 
+  defp markdown_to_html(%Conv{status: 200, resp_body: markdown} = conv) do
+    %{conv | status: 200, resp_body: Earmark.as_html!(markdown, compact_output: true)}
+  end
+
+  defp markdown_to_html(%Conv{} = conv), do: conv
+
   def route(%Conv{method: "GET", path: "/about"} = conv) do
     @pages_path
     |> Path.join("about.html")
     |> File.read()
     |> handle_file(conv)
+  end
+
+  def route(%Conv{method: "GET", path: "/pages/" <> name} = conv) do
+    @pages_path
+    |> Path.join("#{name}.md")
+    |> File.read()
+    |> handle_file(conv)
+    |> markdown_to_html()
   end
 
   def route(%Conv{method: "GET", path: "/bears/new"} = conv) do
