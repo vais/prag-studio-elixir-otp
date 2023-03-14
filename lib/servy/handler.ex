@@ -31,6 +31,15 @@ defmodule Servy.Handler do
 
   defp markdown_to_html(%Conv{} = conv), do: conv
 
+  def route(%Conv{method: "GET", path: "/kaboom"} = _conv) do
+    raise "Kaboom!"
+  end
+
+  def route(%Conv{method: "GET", path: "/hibernate/" <> time} = conv) do
+    time |> String.to_integer() |> Process.sleep()
+    %{conv | status: 200, resp_body: "I'm awake now!"}
+  end
+
   def route(%Conv{method: "GET", path: "/about"} = conv) do
     @pages_path
     |> Path.join("about.html")

@@ -8,7 +8,11 @@ defmodule Servy.HttpServer do
 
   defp accept_loop(listen_socket) do
     {:ok, client_socket} = :gen_tcp.accept(listen_socket)
-    serve(client_socket)
+
+    spawn(fn ->
+      serve(client_socket)
+    end)
+
     accept_loop(listen_socket)
   end
 
