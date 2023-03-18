@@ -31,6 +31,24 @@ defmodule Servy.Handler do
 
   defp markdown_to_html(%Conv{} = conv), do: conv
 
+  def route(%Conv{method: "GET", path: "/snapshots"} = conv) do
+    parent = self()
+    range = 1..3
+
+    for i <- range do
+      spawn(fn -> send(parent, {:result, Servy.VideoCam.get_snapshot("cam-#{i}")}) end)
+    end
+
+    snapshots =
+      for _ <- range do
+        receive do
+          {:result, filename} -> filename
+        end
+      end
+
+    %{conv | status: 200, resp_body: inspect(snapshots)}
+  end
+
   def route(%Conv{method: "GET", path: "/kaboom"} = _conv) do
     raise "Kaboom!"
   end
