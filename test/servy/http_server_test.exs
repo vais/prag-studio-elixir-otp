@@ -1,21 +1,14 @@
 defmodule Servy.HttpServerTest do
   use ExUnit.Case
 
-  alias Servy.{HttpServer, HttpClient}
+  alias Servy.HttpServer
 
   test "the server" do
     spawn(HttpServer, :start, [4000])
 
-    request = """
-    GET /bears HTTP/1.1\r
-    Host: example.com\r
-    User-Agent: ExampleBrowser/1.0\r
-    Accept: */*\r
-    \r
-    """
+    {:ok, response} = HTTPoison.get("http://localhost:4000/wildthings")
 
-    response = HttpClient.send(request)
-
-    assert response =~ "All the Bears!"
+    assert response.status_code == 200
+    assert response.body == "Bears, Lions, Tigers"
   end
 end
