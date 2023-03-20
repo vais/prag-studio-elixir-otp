@@ -3,32 +3,29 @@ defmodule Servy.HttpServerTest do
 
   alias Servy.HttpServer
 
-  test "the server" do
+  setup do
     spawn(HttpServer, :start, [4000])
+    :ok
+  end
 
-    parent = self()
+  test "/sensors" do
+    {:ok, res} = HTTPoison.get("http://localhost:4000/sensors")
 
-    bears = %{
-      1 => "Teddy",
-      2 => "Smokey",
-      3 => "Paddington",
-      4 => "Scarface",
-      5 => "Snow"
+    assert res.status_code == 200
+
+    expected_body = %{
+      "snapshots" => [
+        "cam-1-snapshot.jpg",
+        "cam-2-snapshot.jpg",
+        "cam-3-snapshot.jpg"
+      ],
+      "smokey" => %{"lat" => "48.7596 N", "lng" => "113.7870 W"}
     }
 
-    for id <- Map.keys(bears) do
-      spawn(fn ->
-        {:ok, response} = HTTPoison.get("http://localhost:4000/bears/#{id}")
-        send(parent, {:response, id, response})
-      end)
-    end
+    body =
+      res.body
+      |> Poison.decode!()
 
-    for _ <- bears do
-      receive do
-        {:response, id, response} ->
-          assert response.status_code == 200
-          assert response.body =~ bears[id]
-      end
-    end
+    assert body == expected_body
   end
 end

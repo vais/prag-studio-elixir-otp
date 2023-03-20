@@ -4,6 +4,8 @@ defmodule Servy.Handler do
   alias Servy.Conv
   alias Servy.BearController
   alias Servy.Api
+  alias Servy.VideoCam
+  alias Servy.Tracker
 
   @pages_path Path.expand("../../pages", __DIR__)
 
@@ -31,22 +33,20 @@ defmodule Servy.Handler do
 
   defp markdown_to_html(%Conv{} = conv), do: conv
 
-  def route(%Conv{method: "GET", path: "/snapshots"} = conv) do
-    parent = self()
-    range = 1..3
-
-    for i <- range do
-      spawn(fn -> send(parent, {:result, Servy.VideoCam.get_snapshot("cam-#{i}")}) end)
-    end
+  def route(%Conv{method: "GET", path: "/sensors"} = conv) do
+    smokey = Task.async(Tracker, :get_location, ["smokey"])
 
     snapshots =
-      for _ <- range do
-        receive do
-          {:result, filename} -> filename
-        end
-      end
+      ["cam-1", "cam-2", "cam-3"]
+      |> Enum.map(&Task.async(VideoCam, :get_snapshot, [&1]))
+      |> Enum.map(&Task.await/1)
 
-    %{conv | status: 200, resp_body: inspect(snapshots)}
+    body = %{
+      snapshots: snapshots,
+      smokey: Task.await(smokey)
+    }
+
+    %{conv | status: 200, resp_body: Poison.encode!(body)}
   end
 
   def route(%Conv{method: "GET", path: "/kaboom"} = _conv) do
