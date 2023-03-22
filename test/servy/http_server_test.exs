@@ -3,7 +3,7 @@ defmodule Servy.HttpServerTest do
 
   alias Servy.HttpServer
 
-  setup do
+  setup_all do
     spawn(HttpServer, :start, [4000])
     :ok
   end
@@ -27,5 +27,18 @@ defmodule Servy.HttpServerTest do
       |> Poison.decode!()
 
     assert body == expected_body
+  end
+
+  test "all good" do
+    [
+      "http://localhost:4000/wildthings",
+      "http://localhost:4000/bears",
+      "http://localhost:4000/bears/1",
+      "http://localhost:4000/wildlife",
+      "http://localhost:4000/api/bears"
+    ]
+    |> Enum.map(&Task.async(HTTPoison, :get, [&1]))
+    |> Enum.map(&Task.await/1)
+    |> Enum.each(fn {:ok, res} -> assert res.status_code == 200 end)
   end
 end
