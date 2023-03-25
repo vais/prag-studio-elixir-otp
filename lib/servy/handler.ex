@@ -33,6 +33,14 @@ defmodule Servy.Handler do
 
   defp markdown_to_html(%Conv{} = conv), do: conv
 
+  def route(%Conv{method: "GET", path: "/pledge"} = conv) do
+    Servy.PledgeController.index(conv)
+  end
+
+  def route(%Conv{method: "POST", path: "/pledge"} = conv) do
+    Servy.PledgeController.create(conv, conv.params)
+  end
+
   def route(%Conv{method: "GET", path: "/sensors"} = conv) do
     smokey = Task.async(Tracker, :get_location, ["smokey"])
 

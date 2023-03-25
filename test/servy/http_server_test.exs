@@ -3,8 +3,9 @@ defmodule Servy.HttpServerTest do
 
   alias Servy.HttpServer
 
-  setup_all do
-    spawn(HttpServer, :start, [4000])
+  setup do
+    http_server = spawn(HttpServer, :start, [4000])
+    on_exit(fn -> Process.exit(http_server, :shutdown) end)
     :ok
   end
 
