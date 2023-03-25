@@ -1,9 +1,15 @@
 defmodule Servy.PledgeServer do
   def start(pledges) do
+    maybe_start(Process.whereis(__MODULE__), pledges)
+  end
+
+  defp maybe_start(_pid = nil, pledges) do
     pid = spawn(__MODULE__, :loop, [pledges])
     Process.register(pid, __MODULE__)
     pid
   end
+
+  defp maybe_start(pid, _pledges), do: pid
 
   def loop(state) do
     receive do
