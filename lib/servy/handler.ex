@@ -6,6 +6,7 @@ defmodule Servy.Handler do
   alias Servy.Api
   alias Servy.VideoCam
   alias Servy.Tracker
+  alias Servy.HitCounterDiy, as: HitCounter
 
   @pages_path Path.expand("../../pages", __DIR__)
 
@@ -32,6 +33,10 @@ defmodule Servy.Handler do
   end
 
   defp markdown_to_html(%Conv{} = conv), do: conv
+
+  def route(%Conv{method: "GET", path: "/404s"} = conv) do
+    %{conv | status: 200, resp_body: inspect(HitCounter.report())}
+  end
 
   def route(%Conv{method: "GET", path: "/pledge"} = conv) do
     Servy.PledgeController.index(conv)

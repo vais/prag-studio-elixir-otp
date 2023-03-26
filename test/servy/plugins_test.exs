@@ -3,6 +3,12 @@ defmodule Servy.PluginsTest do
 
   alias Servy.Plugins
   alias Servy.Conv
+  alias Servy.HitCounterDiy, as: HitCounter
+
+  setup do
+    hit_counter = HitCounter.start(%{})
+    on_exit(fn -> Process.exit(hit_counter, :shutdown) end)
+  end
 
   test "rewrite_path" do
     conv = %Conv{

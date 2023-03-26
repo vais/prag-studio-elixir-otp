@@ -3,6 +3,12 @@ defmodule Servy.HandlerTest do
 
   alias Servy.Conv
   alias Servy.Handler
+  alias Servy.HitCounterDiy, as: HitCounter
+
+  setup do
+    hit_counter = HitCounter.start(%{})
+    on_exit(fn -> Process.exit(hit_counter, :shutdown) end)
+  end
 
   test "route /wildthings" do
     conv = %Conv{

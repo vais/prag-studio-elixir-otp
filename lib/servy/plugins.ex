@@ -2,6 +2,7 @@ defmodule Servy.Plugins do
   require Logger
 
   alias Servy.Conv
+  alias Servy.HitCounterDiy, as: HitCounter
 
   def rewrite_path(%Conv{path: "/wildlife"} = conv) do
     %{conv | path: "/wildthings"}
@@ -26,6 +27,8 @@ defmodule Servy.Plugins do
   def emojify(%Conv{} = conv), do: conv
 
   def track(%Conv{status: 404} = conv) do
+    HitCounter.hit(conv.path)
+
     conv
     |> Map.take([:method, :path, :status])
     |> Map.values()
