@@ -1,7 +1,7 @@
 defmodule Servy.PledgeControllerTest do
   use ExUnit.Case
 
-  @url "http://localhost:4000/pledge"
+  @url "http://localhost:4000/pledges"
 
   setup do
     http_server = spawn(Servy.HttpServer, :start, [4000])
@@ -15,14 +15,14 @@ defmodule Servy.PledgeControllerTest do
     :ok
   end
 
-  test "GET /pledge" do
+  test "GET /pledges" do
     {:ok, res} = HTTPoison.get(@url)
 
     assert res.status_code == 200
     assert res.body == "[]"
   end
 
-  test "POST /pledge" do
+  test "POST /pledges" do
     body = "name=Vais&amount=10"
     headers = [{"Content-Type", "application/x-www-form-urlencoded"}]
 

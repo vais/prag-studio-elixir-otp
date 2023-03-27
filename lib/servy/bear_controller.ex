@@ -10,12 +10,12 @@ defmodule Servy.BearController do
       |> Enum.filter(&Bear.is_grizzly/1)
       |> Enum.sort(&Bear.order_asc_by_name/2)
 
-    render(conv, "index.eex", bears: bears)
+    render(conv, "bear/index.eex", bears: bears)
   end
 
   def show(conv, %{"id" => id} = _params) do
     bear = Wildthings.get_bear(id)
-    render(conv, "show.eex", bear: bear)
+    render(conv, "bear/show.eex", bear: bear)
   end
 
   def create(conv, %{"type" => type, "name" => name} = _params) do
