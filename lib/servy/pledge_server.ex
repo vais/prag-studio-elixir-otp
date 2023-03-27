@@ -28,20 +28,24 @@ defmodule Servy.PledgeServer do
     end
   end
 
-  def total_pledged do
-    send(__MODULE__, {self(), :total_pledged})
+  ### GenServer Client API ###
+
+  def call(pid, message) do
+    send(pid, {self(), message})
 
     receive do
-      {:response, total_pledged} -> total_pledged
+      {:response, response} -> response
     end
   end
 
-  def recent_pledges() do
-    send(__MODULE__, {self(), :recent_pledges})
+  ############################
 
-    receive do
-      {:response, pledges} -> pledges
-    end
+  def total_pledged do
+    call(__MODULE__, :total_pledged)
+  end
+
+  def recent_pledges() do
+    call(__MODULE__, :recent_pledges)
   end
 
   def create_pledge(name, amount) do
