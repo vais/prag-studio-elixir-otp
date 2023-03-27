@@ -13,19 +13,27 @@ defmodule Servy.PledgeServer do
 
   def loop(state) do
     receive do
-      {:create_pledge, name, amount} ->
-        new_state = Enum.take([{name, amount} | state], 3)
+      {caller, message} when is_pid(caller) ->
+        {response, new_state} = handle_call(message, state)
+        send(caller, {:response, response})
         loop(new_state)
-
-      {caller, :recent_pledges} ->
-        send(caller, {:response, state})
-        loop(state)
-
-      {caller, :total_pledged} ->
-        total_pledged = Enum.reduce(state, 0, fn {_name, amount}, acc -> acc + amount end)
-        send(caller, {:response, total_pledged})
-        loop(state)
     end
+  end
+
+  ### GenServer Serfver API ###
+
+  def handle_call(:total_pledged, state) do
+    total_pledged = Enum.reduce(state, 0, fn {_name, amount}, acc -> acc + amount end)
+    {total_pledged, state}
+  end
+
+  def handle_call(:recent_pledges, state) do
+    {state, state}
+  end
+
+  def handle_call({:create_pledge, name, amount}, state) do
+    new_state = Enum.take([{name, amount} | state], 3)
+    {:ok, new_state}
   end
 
   ### GenServer Client API ###
@@ -50,7 +58,7 @@ defmodule Servy.PledgeServer do
 
   def create_pledge(name, amount) do
     {:ok, _id} = send_pledge_to_service(name, amount)
-    send(__MODULE__, {:create_pledge, name, amount})
+    call(__MODULE__, {:create_pledge, name, amount})
   end
 
   def send_pledge_to_service(_name, _amount) do
