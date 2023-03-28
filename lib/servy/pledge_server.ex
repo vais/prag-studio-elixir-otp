@@ -1,36 +1,54 @@
-defmodule Servy.PledgeServer do
+defmodule Servy.PledgeServer.GenericServer do
   require Logger
 
-  def start(pledges) do
-    maybe_start(Process.whereis(__MODULE__), pledges)
+  def start(callback_module, initial_state) do
+    maybe_start(Process.whereis(callback_module), callback_module, initial_state)
   end
 
-  defp maybe_start(_pid = nil, pledges) do
-    pid = spawn(__MODULE__, :loop, [pledges])
-    Process.register(pid, __MODULE__)
+  defp maybe_start(_pid = nil, callback_module, initial_state) do
+    pid = spawn(__MODULE__, :loop, [callback_module, initial_state])
+    Process.register(pid, callback_module)
     pid
   end
 
-  defp maybe_start(pid, _pledges), do: pid
+  defp maybe_start(pid, _mod, _state), do: pid
 
-  def loop(state) do
+  def loop(callback_module, state) do
     receive do
       {:call, caller, message} when is_pid(caller) ->
-        {response, new_state} = handle_call(message, state)
+        {response, new_state} = callback_module.handle_call(message, state)
         send(caller, {:response, response})
-        loop(new_state)
+        loop(callback_module, new_state)
 
       {:cast, message} ->
-        new_state = handle_cast(message, state)
-        loop(new_state)
+        new_state = callback_module.handle_cast(message, state)
+        loop(callback_module, new_state)
 
       unexpected ->
         Logger.error("Unexpected message: #{inspect(unexpected)}")
-        loop(state)
+        loop(callback_module, state)
     end
   end
 
-  ### GenServer Serfver API ###
+  def call(pid, message) do
+    send(pid, {:call, self(), message})
+
+    receive do
+      {:response, response} -> response
+    end
+  end
+
+  def cast(pid, message) do
+    send(pid, {:cast, message})
+  end
+end
+
+defmodule Servy.PledgeServer do
+  alias Servy.PledgeServer.GenericServer
+
+  def start(pledges) do
+    GenericServer.start(__MODULE__, pledges)
+  end
 
   def handle_call(:total_pledged, state) do
     total_pledged = Enum.reduce(state, 0, fn {_name, amount}, acc -> acc + amount end)
@@ -50,37 +68,21 @@ defmodule Servy.PledgeServer do
     []
   end
 
-  ### GenServer Client API ###
-
-  def call(pid, message) do
-    send(pid, {:call, self(), message})
-
-    receive do
-      {:response, response} -> response
-    end
-  end
-
-  def cast(pid, message) do
-    send(pid, {:cast, message})
-  end
-
-  ############################
-
   def clear() do
-    cast(__MODULE__, :clear)
+    GenericServer.cast(__MODULE__, :clear)
   end
 
   def total_pledged do
-    call(__MODULE__, :total_pledged)
+    GenericServer.call(__MODULE__, :total_pledged)
   end
 
   def recent_pledges() do
-    call(__MODULE__, :recent_pledges)
+    GenericServer.call(__MODULE__, :recent_pledges)
   end
 
   def create_pledge(name, amount) do
     {:ok, _id} = send_pledge_to_service(name, amount)
-    call(__MODULE__, {:create_pledge, name, amount})
+    GenericServer.call(__MODULE__, {:create_pledge, name, amount})
   end
 
   def send_pledge_to_service(_name, _amount) do
