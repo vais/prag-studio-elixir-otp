@@ -1,4 +1,6 @@
 defmodule Servy.PledgeServer do
+  require Logger
+
   def start(pledges) do
     maybe_start(Process.whereis(__MODULE__), pledges)
   end
@@ -13,10 +15,18 @@ defmodule Servy.PledgeServer do
 
   def loop(state) do
     receive do
-      {caller, message} when is_pid(caller) ->
+      {:call, caller, message} when is_pid(caller) ->
         {response, new_state} = handle_call(message, state)
         send(caller, {:response, response})
         loop(new_state)
+
+      {:cast, message} ->
+        new_state = handle_cast(message, state)
+        loop(new_state)
+
+      unexpected ->
+        Logger.error("Unexpected message: #{inspect(unexpected)}")
+        loop(state)
     end
   end
 
@@ -36,17 +46,29 @@ defmodule Servy.PledgeServer do
     {:ok, new_state}
   end
 
+  def handle_cast(:clear, _state) do
+    []
+  end
+
   ### GenServer Client API ###
 
   def call(pid, message) do
-    send(pid, {self(), message})
+    send(pid, {:call, self(), message})
 
     receive do
       {:response, response} -> response
     end
   end
 
+  def cast(pid, message) do
+    send(pid, {:cast, message})
+  end
+
   ############################
+
+  def clear() do
+    cast(__MODULE__, :clear)
+  end
 
   def total_pledged do
     call(__MODULE__, :total_pledged)
