@@ -19,5 +19,22 @@ defmodule Servy.HitCounterDiyTest do
     assert HitCounter.get_count("x") == 0
 
     assert HitCounter.report() == %{"a" => 3, "z" => 1}
+
+    HitCounter.reset()
+    HitCounter.hit("z")
+    assert HitCounter.report() == %{"z" => 1}
+  end
+
+  test "unexpected message" do
+    log =
+      ExUnit.CaptureLog.capture_log(fn ->
+        send(HitCounter, "wat")
+        Process.sleep(500)
+      end)
+
+    assert log =~ "Unexpected message: \"wat\""
+
+    HitCounter.hit("a")
+    assert HitCounter.get_count("a") == 1
   end
 end
