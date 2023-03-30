@@ -1,7 +1,9 @@
 defmodule Servy.PledgeServer do
   use GenServer
 
-  def start(state) do
+  defstruct pledges: []
+
+  def start(%__MODULE__{} = state \\ %__MODULE__{}) do
     GenServer.start(__MODULE__, state, name: __MODULE__)
   end
 
@@ -10,21 +12,21 @@ defmodule Servy.PledgeServer do
   end
 
   def handle_call(:total_pledged, _from, state) do
-    total_pledged = Enum.reduce(state, 0, fn {_name, amount}, acc -> acc + amount end)
+    total_pledged = Enum.reduce(state.pledges, 0, fn {_name, amount}, acc -> acc + amount end)
     {:reply, total_pledged, state}
   end
 
   def handle_call(:recent_pledges, _from, state) do
-    {:reply, state, state}
+    {:reply, state.pledges, state}
   end
 
   def handle_call({:create_pledge, name, amount}, _from, state) do
-    new_state = Enum.take([{name, amount} | state], 3)
+    new_state = %{state | pledges: Enum.take([{name, amount} | state.pledges], 3)}
     {:reply, :ok, new_state}
   end
 
   def handle_cast(:clear, _state) do
-    {:noreply, []}
+    {:noreply, %__MODULE__{}}
   end
 
   def clear() do

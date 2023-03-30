@@ -4,7 +4,7 @@ defmodule Servy.PledgeServerTest do
   alias Servy.PledgeServer
 
   setup do
-    {:ok, pledge_server} = PledgeServer.start([])
+    {:ok, pledge_server} = PledgeServer.start()
 
     on_exit(fn ->
       Process.exit(pledge_server, :shutdown)
