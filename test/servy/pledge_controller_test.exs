@@ -5,7 +5,7 @@ defmodule Servy.PledgeControllerTest do
 
   setup do
     http_server = spawn(Servy.HttpServer, :start, [4000])
-    pledge_server = Servy.PledgeServer.start([])
+    {:ok, pledge_server} = Servy.PledgeServer.start([])
 
     on_exit(fn ->
       Process.exit(http_server, :shutdown)

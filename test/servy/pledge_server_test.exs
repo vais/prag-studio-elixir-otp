@@ -4,7 +4,7 @@ defmodule Servy.PledgeServerTest do
   alias Servy.PledgeServer
 
   setup do
-    pledge_server = PledgeServer.start([])
+    {:ok, pledge_server} = PledgeServer.start([])
 
     on_exit(fn ->
       Process.exit(pledge_server, :shutdown)
@@ -18,7 +18,7 @@ defmodule Servy.PledgeServerTest do
         Process.sleep(500)
       end)
 
-    assert log =~ "Unexpected message: \"hello\""
+    assert log =~ "unexpected message"
   end
 
   test "total_pledged" do
