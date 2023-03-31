@@ -1,7 +1,7 @@
 defmodule Servy.PledgeServer do
   use GenServer
 
-  defstruct pledges: []
+  defstruct pledges: [], cache_size: 3
 
   def start(%__MODULE__{} = state \\ %__MODULE__{}) do
     GenServer.start(__MODULE__, state, name: __MODULE__)
@@ -21,12 +21,39 @@ defmodule Servy.PledgeServer do
   end
 
   def handle_call({:create_pledge, name, amount}, _from, state) do
-    new_state = %{state | pledges: Enum.take([{name, amount} | state.pledges], 3)}
+    pledges =
+      [{name, amount} | state.pledges]
+      |> Enum.take(state.cache_size)
+
+    new_state = %{state | pledges: pledges}
+
     {:reply, :ok, new_state}
+  end
+
+  def handle_call(:cache_size, _from, state) do
+    {:reply, state.cache_size, state}
   end
 
   def handle_cast(:clear, _state) do
     {:noreply, %__MODULE__{}}
+  end
+
+  def handle_cast({:cache_size, size}, state) do
+    pledges =
+      state.pledges
+      |> Enum.take(size)
+
+    new_state = %{state | pledges: pledges, cache_size: size}
+
+    {:noreply, new_state}
+  end
+
+  def cache_size(size) when is_integer(size) and size > 0 do
+    GenServer.cast(__MODULE__, {:cache_size, size})
+  end
+
+  def cache_size() do
+    GenServer.call(__MODULE__, :cache_size)
   end
 
   def clear() do
