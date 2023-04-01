@@ -1,6 +1,4 @@
 defmodule Servy.HitCounterDiy.GenericServer do
-  require Logger
-
   def start(mod, %{} = state) do
     maybe_start(mod, state, Process.whereis(mod))
   end
@@ -24,9 +22,9 @@ defmodule Servy.HitCounterDiy.GenericServer do
         send(caller, {:response, response})
         loop(mod, new_state)
 
-      unexpected ->
-        Logger.error("Unexpected message: #{inspect(unexpected)}")
-        loop(mod, state)
+      other ->
+        new_state = mod.handle_info(other, state)
+        loop(mod, new_state)
     end
   end
 
@@ -44,10 +42,17 @@ defmodule Servy.HitCounterDiy.GenericServer do
 end
 
 defmodule Servy.HitCounterDiy do
+  require Logger
+
   alias Servy.HitCounterDiy.GenericServer
 
   def start(%{} = state) do
     GenericServer.start(__MODULE__, state)
+  end
+
+  def handle_info(other, state) do
+    Logger.error("Unexpected message: #{inspect(other)}")
+    state
   end
 
   def handle_cast(:reset, _state) do
