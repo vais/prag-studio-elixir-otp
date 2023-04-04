@@ -2,10 +2,17 @@ defmodule Servy.HttpServerTest do
   use ExUnit.Case
 
   alias Servy.HttpServer
+  alias Servy.SensorServer
 
   setup do
     http_server = spawn(HttpServer, :start, [4000])
-    on_exit(fn -> Process.exit(http_server, :shutdown) end)
+    {:ok, sensor_server} = SensorServer.start()
+
+    on_exit(fn ->
+      Process.exit(http_server, :shutdown)
+      Process.exit(sensor_server, :shutdown)
+    end)
+
     :ok
   end
 

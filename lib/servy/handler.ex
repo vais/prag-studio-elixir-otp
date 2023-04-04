@@ -4,8 +4,7 @@ defmodule Servy.Handler do
   alias Servy.Conv
   alias Servy.BearController
   alias Servy.Api
-  alias Servy.VideoCam
-  alias Servy.Tracker
+  alias Servy.SensorServer
   alias Servy.HitCounterDiy, as: HitCounter
 
   @pages_path Path.expand("../../pages", __DIR__)
@@ -47,19 +46,11 @@ defmodule Servy.Handler do
   end
 
   def route(%Conv{method: "GET", path: "/sensors"} = conv) do
-    smokey = Task.async(Tracker, :get_location, ["smokey"])
+    resp_body =
+      SensorServer.get_sensor_data()
+      |> Poison.encode!()
 
-    snapshots =
-      ["cam-1", "cam-2", "cam-3"]
-      |> Enum.map(&Task.async(VideoCam, :get_snapshot, [&1]))
-      |> Enum.map(&Task.await/1)
-
-    body = %{
-      snapshots: snapshots,
-      smokey: Task.await(smokey)
-    }
-
-    %{conv | status: 200, resp_body: Poison.encode!(body)}
+    %{conv | status: 200, resp_body: resp_body}
   end
 
   def route(%Conv{method: "GET", path: "/kaboom"} = _conv) do
