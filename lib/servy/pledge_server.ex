@@ -3,8 +3,9 @@ defmodule Servy.PledgeServer do
 
   defstruct pledges: [], cache_size: 3
 
-  def start(%__MODULE__{} = state \\ %__MODULE__{}) do
-    GenServer.start(__MODULE__, state, name: __MODULE__)
+  def start_link(%__MODULE__{} = state \\ %__MODULE__{}) do
+    if Mix.env() == :dev, do: IO.puts("Starting #{inspect(__MODULE__)}")
+    GenServer.start_link(__MODULE__, state, name: __MODULE__)
   end
 
   def init(init_arg) do

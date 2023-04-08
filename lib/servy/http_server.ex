@@ -1,5 +1,7 @@
 defmodule Servy.HttpServer do
   def start(port) when is_integer(port) and port > 1023 do
+    if Mix.env() == :dev, do: IO.puts("Starting #{inspect(__MODULE__)}")
+
     {:ok, listen_socket} =
       :gen_tcp.listen(port, [:binary, packet: :raw, active: false, reuseaddr: true])
 

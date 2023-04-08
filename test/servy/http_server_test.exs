@@ -6,7 +6,7 @@ defmodule Servy.HttpServerTest do
 
   setup do
     http_server = spawn(HttpServer, :start, [4000])
-    {:ok, sensor_server} = SensorServer.start()
+    {:ok, sensor_server} = SensorServer.start_link(:ok)
 
     on_exit(fn ->
       Process.exit(http_server, :shutdown)

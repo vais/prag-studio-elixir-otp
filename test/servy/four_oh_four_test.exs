@@ -8,7 +8,7 @@ defmodule FourOhFourTest do
 
   setup do
     http_server = spawn(HttpServer, :start, [@port])
-    hit_counter = HitCounter.start(%{})
+    {:ok, hit_counter} = HitCounter.start_link(%{})
 
     on_exit(fn ->
       for pid <- [http_server, hit_counter] do

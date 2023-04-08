@@ -2,6 +2,7 @@ defmodule Servy.Kickstarter do
   use GenServer
 
   def start do
+    if Mix.env() == :dev, do: IO.puts("Starting #{inspect(__MODULE__)}")
     GenServer.start(__MODULE__, :ok, name: __MODULE__)
   end
 

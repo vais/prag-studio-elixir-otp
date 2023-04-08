@@ -6,7 +6,7 @@ defmodule Servy.PluginsTest do
   alias Servy.HitCounterDiy, as: HitCounter
 
   setup do
-    hit_counter = HitCounter.start(%{})
+    {:ok, hit_counter} = HitCounter.start_link(%{})
     on_exit(fn -> Process.exit(hit_counter, :shutdown) end)
   end
 

@@ -2,10 +2,12 @@ defmodule Servy.HitCounterDiy do
   use GenServer
   require Logger
 
-  def start(%{} = state) do
-    case GenServer.start(__MODULE__, state, name: __MODULE__) do
-      {:ok, pid} -> pid
-      {:error, {:already_started, pid}} -> pid
+  def start_link(%{} = state) do
+    if Mix.env() == :dev, do: IO.puts("Starting #{inspect(__MODULE__)}")
+
+    case GenServer.start_link(__MODULE__, state, name: __MODULE__) do
+      {:ok, pid} -> {:ok, pid}
+      {:error, {:already_started, pid}} -> {:ok, pid}
     end
   end
 
