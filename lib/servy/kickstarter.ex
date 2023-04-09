@@ -1,9 +1,9 @@
 defmodule Servy.Kickstarter do
   use GenServer
 
-  def start do
+  def start_link(_) do
     if Mix.env() == :dev, do: IO.puts("Starting #{inspect(__MODULE__)}")
-    GenServer.start(__MODULE__, :ok, name: __MODULE__)
+    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
   def get_http_server_pid do
