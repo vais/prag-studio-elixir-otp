@@ -5,9 +5,11 @@ defmodule Servy.SensorServer do
 
   alias Servy.{Tracker, VideoCam}
 
-  def start_link(_) do
+  def start_link(refresh_interval) do
     if Mix.env() == :dev, do: IO.puts("Starting #{inspect(__MODULE__)}")
-    GenServer.start_link(__MODULE__, %__MODULE__{}, name: __MODULE__)
+
+    init_arg = %__MODULE__{refresh_interval: refresh_interval}
+    GenServer.start_link(__MODULE__, init_arg, name: __MODULE__)
   end
 
   def get_sensor_data do
