@@ -4,17 +4,14 @@ defmodule Servy.PledgeServerTest do
   alias Servy.PledgeServer
 
   setup do
-    {:ok, pledge_server} = PledgeServer.start_link()
-
-    on_exit(fn ->
-      Process.exit(pledge_server, :shutdown)
-    end)
+    PledgeServer.clear()
+    :ok
   end
 
   test "unexpected message" do
     log =
       ExUnit.CaptureLog.capture_log(fn ->
-        send(Servy.PledgeServer, "hello")
+        send(PledgeServer, "hello")
         Process.sleep(500)
       end)
 

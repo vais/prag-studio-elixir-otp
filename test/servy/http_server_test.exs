@@ -1,21 +1,6 @@
 defmodule Servy.HttpServerTest do
   use ExUnit.Case
 
-  alias Servy.HttpServer
-  alias Servy.SensorServer
-
-  setup do
-    http_server = spawn(HttpServer, :start, [4000])
-    {:ok, sensor_server} = SensorServer.start_link(:ok)
-
-    on_exit(fn ->
-      Process.exit(http_server, :shutdown)
-      Process.exit(sensor_server, :shutdown)
-    end)
-
-    :ok
-  end
-
   test "/sensors" do
     {:ok, res} = HTTPoison.get("http://localhost:4000/sensors")
 

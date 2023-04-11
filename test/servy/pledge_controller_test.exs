@@ -4,14 +4,7 @@ defmodule Servy.PledgeControllerTest do
   @url "http://localhost:4000/pledges"
 
   setup do
-    http_server = spawn(Servy.HttpServer, :start, [4000])
-    {:ok, pledge_server} = Servy.PledgeServer.start_link()
-
-    on_exit(fn ->
-      Process.exit(http_server, :shutdown)
-      Process.exit(pledge_server, :shutdown)
-    end)
-
+    Servy.PledgeServer.clear()
     :ok
   end
 

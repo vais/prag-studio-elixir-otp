@@ -3,11 +3,6 @@ defmodule Servy.SensorServerTest do
 
   alias Servy.SensorServer
 
-  setup do
-    {:ok, pid} = SensorServer.start_link(:ok)
-    on_exit(fn -> Process.exit(pid, :shutdown) end)
-  end
-
   test "makes sensor data available immediately" do
     expected = %{
       snapshots: [
